@@ -28,8 +28,8 @@
 
 CBitStreamInput::CBitStreamInput(void)
 {
-  m_in         = 0;
-  m_pData      = 0;
+  m_in         = nullptr;
+  m_pData      = nullptr;
   m_DataLen    = 0;
   m_currPos    = 0;
   m_nUsedBytes = 0;
@@ -58,15 +58,11 @@ JERRCODE CBitStreamInput::Attach(CBaseStreamInput* in)
 
 JERRCODE CBitStreamInput::Detach(void)
 {
-  if(0 != m_pData)
-  {
-    // deallocate internal memory
-    delete[] m_pData;
-    m_pData = 0;
-  }
+  // deallocate internal memory
+  delete[] m_pData;
 
-  m_in         = 0;
-  m_pData      = 0;
+  m_in         = nullptr;
+  m_pData      = nullptr;
   m_DataLen    = 0;
   m_currPos    = 0;
   m_nUsedBytes = 0;
@@ -80,10 +76,7 @@ JERRCODE CBitStreamInput::Init(int bufSize)
 {
   m_DataLen = (int)bufSize;
 
-  if (m_pData)
-  {
-    delete[] m_pData;
-  }
+  delete[] m_pData;
 
   m_pData = new uint8_t[m_DataLen];
 
