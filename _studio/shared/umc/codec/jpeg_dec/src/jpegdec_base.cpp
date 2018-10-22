@@ -158,7 +158,7 @@ JERRCODE CJPEGDecoderBase::Clean(void)
 #define BS_BUFLEN 16384
 
 JERRCODE CJPEGDecoderBase::SetSource(
-  CBaseStreamInput* pInStream)
+  std::shared_ptr<CBaseStreamInput> pInStream)
 {
   JERRCODE jerr;
 

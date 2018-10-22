@@ -24,6 +24,7 @@
 #include "umc_defs.h"
 #if defined (MFX_ENABLE_MJPEG_VIDEO_DECODE)
 #include "jpegbase.h"
+#include <memory>
 
 
 class CBaseStreamInput;
@@ -36,7 +37,7 @@ public:
   CBitStreamInput(void);
   virtual ~CBitStreamInput(void);
 
-  JERRCODE Attach(CBaseStreamInput* in);
+  JERRCODE Attach(std::shared_ptr<CBaseStreamInput> in);
   JERRCODE Detach(void);
 
   JERRCODE Init(int bufSize = DEC_DEFAULT_BUFLEN);
@@ -56,7 +57,7 @@ public:
   JERRCODE ReadDword(int* dword);
 
 protected:
-  CBaseStreamInput* m_in;
+  std::shared_ptr<CBaseStreamInput> m_in;
 
   uint8_t*          m_pData;
   int               m_DataLen;

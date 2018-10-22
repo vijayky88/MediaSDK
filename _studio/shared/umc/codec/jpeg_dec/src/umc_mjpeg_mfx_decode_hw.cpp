@@ -226,7 +226,7 @@ mfxStatus MJPEGVideoDecoderMFX_HW::CheckStatusReportNumber(uint32_t statusReport
     return MFX_TASK_DONE;
 }
 
-Status MJPEGVideoDecoderMFX_HW::_DecodeHeader(CBaseStreamInput* in, int32_t* cnt)
+Status MJPEGVideoDecoderMFX_HW::_DecodeHeader(std::shared_ptr<CBaseStreamInput> in, int32_t* cnt)
 {
     JSS      sampling;
     JERRCODE jerr;
@@ -267,10 +267,10 @@ Status MJPEGVideoDecoderMFX_HW::_DecodeField(MediaDataEx* in)
 {
     int32_t     nUsedBytes = 0;
 
-    CMemBuffInput stream;
-    stream.Open((uint8_t*)in->GetDataPointer(), (int32_t)in->GetDataSize());
+    std::shared_ptr<CBaseStreamInput> stream(new CMemBuffInput);
+    ((CMemBuffInput*)stream.get())->Open((uint8_t*)in->GetDataPointer(), (int32_t)in->GetDataSize());
 
-    Status status = _DecodeHeader(&stream, &nUsedBytes);
+    Status status = _DecodeHeader(stream, &nUsedBytes);
     if (status > 0)
     {
         in->MoveDataPointer(nUsedBytes);
@@ -400,10 +400,10 @@ Status MJPEGVideoDecoderMFX_HW::GetFrameHW(MediaDataEx* in)
         if ((JM_RST0 <= marker && JM_RST7 >= marker) || (JM_EOI == marker))
             continue;
 
-        CMemBuffInput stream;
-        stream.Open((uint8_t*)in->GetDataPointer() + pAuxData->offsets[i] + 2, (int32_t)in->GetDataSize() - pAuxData->offsets[i] - 2);
+        std::shared_ptr<CBaseStreamInput> stream(new CMemBuffInput);
+        ((CMemBuffInput*)stream.get())->Open((uint8_t*)in->GetDataPointer() + pAuxData->offsets[i] + 2, (int32_t)in->GetDataSize() - pAuxData->offsets[i] - 2);
 
-        jerr = m_decBase->SetSource(&stream);
+        jerr = m_decBase->SetSource(stream);
         if(JPEG_OK != jerr)
             return UMC_ERR_FAILED;
 

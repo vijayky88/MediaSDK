@@ -97,7 +97,7 @@ protected:
 
     Status _DecodeField();
 
-    Status _DecodeHeader(CBaseStreamInput* in, int32_t* nUsedBytes);
+    Status _DecodeHeader(std::shared_ptr<CBaseStreamInput> in, int32_t* nUsedBytes);
 
     virtual Status _DecodeField(MediaDataEx* in);
 

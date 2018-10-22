@@ -28,7 +28,7 @@
 
 CBitStreamInput::CBitStreamInput(void)
 {
-  m_in         = nullptr;
+  m_in.reset();
   m_pData      = nullptr;
   m_DataLen    = 0;
   m_currPos    = 0;
@@ -46,7 +46,7 @@ CBitStreamInput::~CBitStreamInput(void)
 } // dtor
 
 
-JERRCODE CBitStreamInput::Attach(CBaseStreamInput* in)
+JERRCODE CBitStreamInput::Attach(std::shared_ptr<CBaseStreamInput> in)
 {
   Detach();
 
@@ -61,7 +61,7 @@ JERRCODE CBitStreamInput::Detach(void)
   // deallocate internal memory
   delete[] m_pData;
 
-  m_in         = nullptr;
+  m_in.reset();
   m_pData      = nullptr;
   m_DataLen    = 0;
   m_currPos    = 0;
@@ -106,7 +106,7 @@ JERRCODE CBitStreamInput::FillBuffer(int nMinBytes)
     m_currPos = 0;
   }
 
-  if(!m_eod)
+  if(!m_eod && nullptr != m_in.get())
   {
     m_in->Read(m_pData + remainder,m_DataLen - remainder,&cnt);
     if((int)cnt != m_DataLen - remainder)
@@ -144,7 +144,7 @@ JERRCODE CBitStreamInput::Seek(long offset, int origin)
         m_currPos     = _offset;
         m_nUsedBytes += offset;
       }
-      else
+      else if (nullptr != m_in.get())
       {
         m_currPos = m_DataLen;
         m_nUsedBytes += offset;

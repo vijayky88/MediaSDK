@@ -39,7 +39,7 @@ public:
   virtual void Reset(void);
 
   JERRCODE SetSource(
-    CBaseStreamInput* pStreamIn);
+    std::shared_ptr<CBaseStreamInput> pStreamIn);
 
   virtual JERRCODE ReadHeader(
     int*     width,
